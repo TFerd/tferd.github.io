@@ -22,6 +22,10 @@ export default function MainComponent() {
       <br />
       <p>Last checked: {lastChecked}</p>
       <p>Last open time: {lastOpenTime || "N/A"}</p>
+      <div>
+        <button onClick={test}>Simulate Open</button>
+        <button onClick={reset}>Reset Last Open</button>
+      </div>
     </>
   );
 
@@ -34,6 +38,40 @@ export default function MainComponent() {
       .then((data) => (result = data));
 
     console.log("Data is: ", result);
+
+    setLastChecked(new Date().toLocaleString());
+
+    if (result.population === "Full") {
+      document.body.style.backgroundColor = "white";
+      setOpenStatus(false);
+      document.title = "closed";
+    } else if (result.text === "too many requests") {
+      setOpenStatus(false);
+      document.title = "too many requests lol";
+    } else {
+      document.body.style.backgroundColor = "limegreen";
+      setOpenStatus(true);
+      document.title = "OPEN!!!!!!!!!!!!!!!!!!!!!";
+      setLastOpenTime(new Date().toLocaleString());
+    }
+  }
+
+  function reset() {
+    document.body.style.backgroundColor = "white";
+    setOpenStatus(false);
+    document.title = "closed";
+    setLastOpenTime(null);
+  }
+
+  async function test() {
+    var url = "https://api.guildwars2.com/v2/worlds?id=1002";
+    console.log("TEST::Calling: ", url);
+    var result;
+    await fetch(url)
+      .then((r) => r.json())
+      .then((data) => (result = data));
+
+    console.log("TEST::Data is: ", result);
 
     setLastChecked(new Date().toLocaleString());
 
